@@ -1,0 +1,29 @@
+{
+  "name": "kanade",
+  "version": "0.0.1",
+  "description": "I will find you, the next life, with my heart, with my song.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "poi dev",
+    "build": "poi build"
+  },
+  "keywords": [
+    "kanade",
+    "web",
+    "audio",
+    "api",
+    "typescript"
+  ],
+  "author": "MisicDemone",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.5"
+  },
+  "devDependencies": {
+    "poi": "^11.0.0-beta.6",
+    "@poi/plugin-ts-check": "^11.0.0-beta.6",
+    "typescript": "^3.1.6",
+    "@types/lodash": "^4.14.107"
+  }
+}
