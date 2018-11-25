@@ -1,17 +1,12 @@
 import { isElement } from 'lodash'
-
-interface OscillatorOptions {
-  type?: any,
-  frequency?: number,
-  detune?: number,
-  periodicWave?: PeriodicWave
-}
+import { capitalize } from './utils'
+import { OscillatorOptions, nodeType } from './defs'
 
 class Kanade {
   audioContext: AudioContext
   source: MediaElementAudioSourceNode | AudioBufferSourceNode | OscillatorNode | MediaStreamAudioSourceNode
-  connectedNode: AudioNode
-  gainNode: GainNode
+  nodes: Array<AudioNode>
+  nodeType: nodeType
 
   constructor (input?: AudioBuffer | HTMLMediaElement | MediaStream) {
     this.audioContext = new AudioContext()
@@ -20,54 +15,72 @@ class Kanade {
     }
   }
 
-  createSource (input: AudioBuffer | HTMLMediaElement | MediaStream) {
+  createSource (input?: AudioBuffer | HTMLMediaElement | MediaStream) {
     if (input instanceof HTMLMediaElement) {
-      this.source = this.audioContext.createMediaElementSource(input)
+      this.source = this
+        .audioContext
+        .createMediaElementSource(input)
     } else if (input instanceof AudioBuffer) {
-      this.source = this.audioContext.createBufferSource()
+      this.source = this
+        .audioContext
+        .createBufferSource()
       if (this.source instanceof AudioBufferSourceNode) {
         this.source.buffer = input
       }
     } else if (input instanceof MediaStream) {
-      this.source = this.audioContext.createMediaStreamSource(input)
+      this.source = this
+        .audioContext
+        .createMediaStreamSource(input)
     } else {
-      throw new Error('The parameter type of function "createSource()" must be HTMLMediaElement or AudioBuffer or MediaStream!')
+      this.source = this.createOscillatorNode()
     }
-    this.connectedNode = this.source
+    return this.source
   }
 
-  createOscillatorNode (options: OscillatorOptions) {
-    this.source = this.audioContext.createOscillator()
-    if (options && this.source instanceof OscillatorNode) {
-      options.type && (this.source.type = options.type)
-      options.frequency && (this.source.frequency.value = options.frequency)
-      options.detune && (this.source.detune.value = options.detune)
-      options.periodicWave && (this.source.setPeriodicWave(options.periodicWave))
+  createOscillatorNode (options?: OscillatorOptions) {
+    const oscillatorNode = this.audioContext.createOscillator()
+    if (options) {
+      options.type && (oscillatorNode.type = options.type)
+      options.frequency && (oscillatorNode.frequency.value = options.frequency)
+      options.detune && (oscillatorNode.detune.value = options.detune)
+      options.periodicWave && (oscillatorNode.setPeriodicWave(options.periodicWave))
     }
-    this.connectedNode = this.source
+    return oscillatorNode
   }
 
-  createGainNode () {
-    this.gainNode = this.audioContext.createGain()
-    this.connectedNode.connect(this.gainNode)
-    this.connectedNode = this.gainNode
-  }
-
-  connectDestination () {
-    this.connectedNode.connect(this.audioContext.destination)
-  }
-
-  start (startTime: number) {
-    if ((this.source instanceof AudioBufferSourceNode) || (this.source instanceof OscillatorNode)) {
-      this.source.start(startTime)
+  createNode (node: nodeType | AudioNode, options?: object) {
+    let audioNode: AudioNode
+    if (typeof node === 'string') {
+      audioNode = this.audioContext[`create${capitalize(node)}`](options)
+    } else if (node instanceof AudioNode) {
+      audioNode = node
+    } else {
+      throw new Error('Kanade: Function "createNode" must have an argument to indicate which node to create.')
     }
+    return audioNode
   }
 
-  stop (stopTime: number) {
-    if ((this.source instanceof AudioBufferSourceNode) || (this.source instanceof OscillatorNode)) {
-      this.source.stop(stopTime)
-    }
-  }
+  // connectDestination () {
+  //   this
+  //     .connectedNode
+  //     .connect(this.audioContext.destination)
+  // }
+
+  // start (startTime: number) {
+  //   if ((this.source instanceof AudioBufferSourceNode) || (this.source instanceof OscillatorNode)) {
+  //     this
+  //       .source
+  //       .start(startTime)
+  //   }
+  // }
+
+  // stop (stopTime: number) {
+  //   if ((this.source instanceof AudioBufferSourceNode) || (this.source instanceof OscillatorNode)) {
+  //     this
+  //       .source
+  //       .stop(stopTime)
+  //   }
+  // }
 
 }
 
