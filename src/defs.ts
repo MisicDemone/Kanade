@@ -1,7 +1,7 @@
 export interface OscillatorOptions {
-  type?: any,
-  frequency?: number,
-  detune?: number,
+  type?: any
+  frequency?: number
+  detune?: number
   periodicWave?: PeriodicWave
 }
 
