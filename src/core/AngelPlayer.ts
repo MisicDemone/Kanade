@@ -1,4 +1,4 @@
-import { OscillatorOptions, nodeType } from './defs'
+import { OscillatorOptions, nodeType } from '../utils/defs'
 
 export default class AngelPlayer {
   audioContext: AudioContext
@@ -12,7 +12,7 @@ export default class AngelPlayer {
 
   nodeType = nodeType
 
-  constructor(input?: AudioBuffer | HTMLMediaElement | MediaStream) {
+  constructor (input?: AudioBuffer | HTMLMediaElement | MediaStream) {
     this.audioContext = new AudioContext()
     this.destination = this.audioContext.destination
     this.nodes = []
@@ -21,7 +21,7 @@ export default class AngelPlayer {
     }
   }
 
-  createSource(
+  createSource (
     input?: AudioBuffer | HTMLMediaElement | MediaStream | OscillatorOptions
   ) {
     if (input instanceof HTMLMediaElement) {
@@ -40,7 +40,7 @@ export default class AngelPlayer {
     return this.source
   }
 
-  createOscillatorNode(options?: OscillatorOptions) {
+  createOscillatorNode (options?: OscillatorOptions) {
     const oscillatorNode = this.audioContext.createOscillator()
     if (options) {
       options.type && (oscillatorNode.type = options.type)
@@ -52,8 +52,8 @@ export default class AngelPlayer {
     return oscillatorNode
   }
 
-  createNode<N extends AudioNode>(node: nodeType | N, options?: object) {
-    let audioNode
+  createNode<N extends AudioNode> (node: nodeType | N, options?: object) {
+    let audioNode: AudioNode
     if (typeof node === 'string') {
       switch (node) {
         case nodeType.Gain:
@@ -75,7 +75,7 @@ export default class AngelPlayer {
     return audioNode
   }
 
-  connect() {
+  connect () {
     this.nodes
       .reduce((lastNode, currentNode) => {
         lastNode.connect(currentNode)
@@ -84,7 +84,7 @@ export default class AngelPlayer {
       .connect(this.destination)
   }
 
-  start(startTime: number) {
+  start (startTime: number) {
     if (
       this.source instanceof AudioBufferSourceNode ||
       this.source instanceof OscillatorNode
@@ -93,7 +93,7 @@ export default class AngelPlayer {
     }
   }
 
-  stop(stopTime: number) {
+  stop (stopTime: number) {
     if (
       this.source instanceof AudioBufferSourceNode ||
       this.source instanceof OscillatorNode

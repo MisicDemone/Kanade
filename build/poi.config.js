@@ -5,7 +5,7 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: '@poi/plugin-ts-check',
+      resolve: '@poi/plugin-typescript',
       options: {}
     }
   ]

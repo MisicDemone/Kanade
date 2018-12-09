@@ -2,11 +2,12 @@
   "name": "kanade",
   "version": "0.0.1",
   "description": "I will find you, the next life, with my heart, with your song.",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "poi dev",
-    "build": "poi build"
+    "dev": "poi --serve --config ./build/poi.config.js",
+    "example": "poi --serve --config ./build/poi.example.config.js",
+    "build": "poi --prod --config ./build/poi.config.js"
   },
   "keywords": [
     "kanade",
@@ -21,8 +22,8 @@
     "lodash": "^4.17.5"
   },
   "devDependencies": {
-    "poi": "^11.0.0-beta.6",
-    "@poi/plugin-ts-check": "^11.0.0-beta.6",
+    "poi": "^12.0.1",
+    "@poi/plugin-typescript": "^12.0.0",
     "typescript": "^3.1.6",
     "@types/lodash": "^4.14.107",
     "eslint": "^4.19.1",
